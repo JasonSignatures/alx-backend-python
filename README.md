@@ -71,4 +71,4 @@ Python Library: The official MySQL connector for Python.
 pip install mysql-connector-python
 
 
-Configuration: You must update the DB_CONFIG dictionary in seed.py with your personal MySQL credentials (user, password, host) before running.# alx-backend-python
+Configuration: You must update the DB_CONFIG dictionary in seed.py with your personal MySQL credentials (user, password, host) before running.
