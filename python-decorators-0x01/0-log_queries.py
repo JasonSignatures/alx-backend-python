@@ -18,3 +18,17 @@ def log_queries(func):
         print("[LOG] Query execution completed.")
         return result
     return wrapper
+
+@log_queries
+def run_query(query, params=None):
+    # Simulated database execution
+    print("Running query in database...")
+    return "Success"
+
+# Example call
+run_query("SELECT * FROM users WHERE id = 1;")
+
+[LOG] Executing SQL Query: SELECT * FROM users WHERE id = 1;
+Running query in database...
+[LOG] Query execution completed.
+
