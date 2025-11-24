@@ -18,3 +18,36 @@ class DeleteUserView(UserPassesTestMixin, DeleteView):
     def test_func(self):
         # Only authenticated users can access this view
         return self.request.user.is_authenticated
+from django.contrib.auth.models import User
+from django.views.generic.edit import DeleteView
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.shortcuts import render
+
+class DeleteUserView(UserPassesTestMixin, DeleteView):
+    """
+    Allows the currently logged-in user to delete their own account.
+    """
+    # 1. Specify the model: Django's built-in User model
+    model = User
+    
+    # 2. Define the success URL to redirect to after deletion
+    # Assuming 'home' is a defined URL name in your project's urlpatterns
+    success_url = reverse_lazy('home') 
+    
+    # 3. Specify the template to render for confirmation
+    # You must create this template file later (e.g., in templates/account/user_confirm_delete.html)
+    template_name = 'account/user_confirm_delete.html' 
+
+    def get_object(self, queryset=None):
+        # Override get_object to ensure the view ONLY targets the logged-in user's account.
+        return self.request.user
+
+    def test_func(self):
+        # Use UserPassesTestMixin to ensure only authenticated users can access the view.
+        return self.request.user.is_authenticated
+
+# You might also need a simple view for your 'home' URL defined in urls.py
+def home_view(request):
+    """Simple view for the success_url redirect."""
+    return render(request, 'home.html', {})
