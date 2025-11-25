@@ -9,17 +9,21 @@ class Message(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return f"Message {self.id} by {self.user.username}"
-class Message(models.Model):
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent_messages")
-    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="received_messages")
-    content = models.TextField()
-    is_read = models.BooleanField(default=False)
-    edited = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+  from django.db import models
+from django.contrib.auth.models import User
 
-    # Custom manager
-    unread = UnreadMessagesManager()
-    objects = models.Manager()  # keep default manager
+
+class Message(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
+    content = models.TextField()
+    read = models.BooleanField(default=False)  # <-- REQUIRED FIELD
+    created_at = models.DateTimeField(auto_now_add=True)
+    edited = models.BooleanField(default=False)
+
+    objects = models.Manager()  # default manager
+    unread = None  # will be replaced below
+
+    def __str__(self):
+        return f"Message {self.id} from {self.sender}"
 
