@@ -38,3 +38,33 @@ class IsParticipantOfConversation(permissions.BasePermission):
 
         # Default to participant check for any other methods
         return is_participant
+
+from rest_framework.permissions import BasePermission, IsAuthenticated
+
+class IsParticipantOfConversation(BasePermission):
+    """
+    Allows access only to authenticated users who are part of the conversation.
+    """
+
+    def has_permission(self, request, view):
+        # User must be authenticated
+        return request.user and request.user.is_authenticated
+
+    def has_object_permission(self, request, view, obj):
+        """
+        obj will be either:
+        - a Conversation instance, or
+        - a Message instance (so we must check obj.conversation)
+        """
+        user = request.user
+
+        # If object is a Conversation
+        if hasattr(obj, "participants"):
+            return user in obj.participants.all()
+
+        # If object is a Message (belongs to a conversation)
+        if hasattr(obj, "conversation"):
+            return user in obj.conversation.participants.all()
+
+        return False
+
