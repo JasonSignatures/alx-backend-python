@@ -1,0 +1,59 @@
+pipeline {
+    agent any
+
+    environment {
+        // Python virtual environment setup
+        VENV_DIR = "venv"
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git credentialsId: 'github-creds', url: 'https://github.com/username/messaging-app.git', branch: 'main'
+            }
+        }
+
+        stage('Set up Python Environment') {
+            steps {
+                // ShiningPanda plugin provides `python` wrapper for virtualenv
+                withPythonEnv('/usr/bin/python3') {
+                    sh '''
+                    python3 -m venv ${VENV_DIR}
+                    source ${VENV_DIR}/bin/activate
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
+                    '''
+                }
+            }
+        }
+
+        stage('Run Tests with Pytest') {
+            steps {
+                sh '''
+                source ${VENV_DIR}/bin/activate
+                pytest --junitxml=reports/results.xml --html=reports/report.html --self-contained-html
+                '''
+            }
+        }
+
+        stage('Archive Test Reports') {
+            steps {
+                junit 'reports/results.xml'
+                publishHTML(target: [
+                    allowMissing: false,
+                    keepAll: true,
+                    reportDir: 'reports',
+                    reportFiles: 'report.html',
+                    reportName: 'Pytest HTML Report'
+                ])
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "Cleaning up environment..."
+            sh 'rm -rf ${VENV_DIR}'
+        }
+    }
+}
