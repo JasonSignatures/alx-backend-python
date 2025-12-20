@@ -105,5 +105,170 @@ pipeline {
             junit 'report.xml'
         }
     }
+}pipeline {
+    agent any
+
+    environment {
+        VENV_DIR = 'venv'
+    }
+
+    stages {
+
+        stage('Checkout Code') {
+            steps {
+                git credentialsId: 'github-creds',
+                    url: 'https://github.com/alx-backend-python/alx-backend-python.git',
+                    branch: 'main'
+            }
+        }
+
+        stage('Show Git Branch') {
+            steps {
+                sh '''
+                echo "Current Git branch:"
+                git branch
+                '''
+                // OR (cleaner output)
+                // sh 'git branch --show-current'
+            }
+        }
+
+        stage('Set Up Virtual Environment') {
+            steps {
+                sh '''
+                python3 -m venv venv
+                . venv/bin/activate
+                pip install --upgrade pip
+                pip install -r messaging_app/requirements.txt
+                '''
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh '''
+                . venv/bin/activate
+                pytest messaging_app --junitxml=report.xml
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            junit 'report.xml'
+        }
+    }
 }
+pipeline {
+    agent any
+
+    environment {
+        VENV_DIR = 'venv'
+    }
+
+    stages {
+
+        stage('Checkout Code') {
+            steps {
+                git credentialsId: 'github-creds',
+                    url: 'https://github.com/alx-backend-python/alx-backend-python.git',
+                    branch: 'main'
+            }
+        }
+
+        stage('Show Git Branch') {
+            steps {
+                sh '''
+                echo "Current Git branch:"
+                git branch
+                '''
+                // OR (cleaner output)
+                // sh 'git branch --show-current'
+            }
+        }
+
+        stage('Set Up Virtual Environment') {
+            steps {
+                sh '''
+                python3 -m venv venv
+                . venv/bin/activate
+                pip install --upgrade pip
+                pip install -r messaging_app/requirements.txt
+                '''
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh '''
+                . venv/bin/activate
+                pytest messaging_app --junitxml=report.xml
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            junit 'report.xml'
+        }
+    }
+}
+pipeline {
+    agent any
+
+    environment {
+        VENV_DIR = 'venv'
+    }
+
+    stages {
+
+        stage('Checkout Code') {
+            steps {
+                git credentialsId: 'github-creds',
+                    url: 'https://github.com/alx-backend-python/alx-backend-python.git',
+                    branch: 'main'
+            }
+        }
+
+        stage('Show Git Branch') {
+            steps {
+                sh '''
+                echo "Current Git branch:"
+                git branch
+                '''
+                // OR (cleaner output)
+                // sh 'git branch --show-current'
+            }
+        }
+
+        stage('Set Up Virtual Environment') {
+            steps {
+                sh '''
+                python3 -m venv venv
+                . venv/bin/activate
+                pip install --upgrade pip
+                pip install -r messaging_app/requirements.txt
+                '''
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh '''
+                . venv/bin/activate
+                pytest messaging_app --junitxml=report.xml
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            junit 'report.xml'
+        }
+    }
+}
+
 
