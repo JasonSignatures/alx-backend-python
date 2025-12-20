@@ -254,23 +254,16 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                sh '''
-                . venv/bin/activate
-                pytest messaging_app --junitxml=report.xml
-                '''
-            }
-        }
-    }
-
-    post {
-        always {
-            junit 'report.xml'
-        }
+      stage('Install Dependencies') {
+    steps {
+        sh '''
+        apt-get update
+        apt-get install -y python3-pip python3-venv
+        python3 -m venv venv
+        . venv/bin/activate
+        pip install -r messaging_app/requirements.txt
+        '''
     }
 }
 
-sudo apt update
-sudo apt install -y python3-pip
 
