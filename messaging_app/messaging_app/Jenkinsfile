@@ -254,16 +254,15 @@ pipeline {
             }
         }
 
-      stage('Install Dependencies') {
+     stage('Checkout Code') {
     steps {
-        sh '''
-        apt-get update
-        apt-get install -y python3-pip python3-venv
-        python3 -m venv venv
-        . venv/bin/activate
-        pip install -r messaging_app/requirements.txt
-        '''
+        git credentialsId: 'github-creds',
+            url: 'https://github.com/alx-backend-python/alx-backend-python.git',
+            branch: 'main'
     }
 }
+
+        pip install -r messaging_app/requirements.txt
+
 
 
